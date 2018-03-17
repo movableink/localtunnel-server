@@ -4,6 +4,7 @@ import tldjs from 'tldjs';
 import Debug from 'debug';
 import http from 'http';
 import Promise from 'bluebird';
+import ip from 'ip';
 
 import ClientManager from './lib/ClientManager';
 import rand_id from './lib/rand_id';
@@ -103,6 +104,15 @@ module.exports = function(opt) {
 
     const appCallback = app.callback();
     server.on('request', (req, res) => {
+        const remoteIp = req.socket.remoteAddress;
+        const allowed = opt.http_subnet;
+
+        if (allowed && !ip.cidrSubnet(allowed).contains(remoteIp)) {
+          res.statusCode = 403;
+          res.end('Forbidden');
+          return;
+        }
+
         // without a hostname, we won't know who the request is for
         const hostname = req.headers.host;
         if (!hostname) {
