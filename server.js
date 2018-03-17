@@ -107,12 +107,6 @@ module.exports = function(opt) {
         const remoteIp = req.socket.remoteAddress;
         const allowed = opt.http_subnet;
 
-        if (allowed && !ip.cidrSubnet(allowed).contains(remoteIp)) {
-          res.statusCode = 403;
-          res.end('Forbidden');
-          return;
-        }
-
         // without a hostname, we won't know who the request is for
         const hostname = req.headers.host;
         if (!hostname) {
@@ -125,6 +119,12 @@ module.exports = function(opt) {
         if (!clientId) {
             appCallback(req, res);
             return;
+        }
+
+        if (allowed && !ip.cidrSubnet(allowed).contains(remoteIp)) {
+          res.statusCode = 403;
+          res.end('Forbidden');
+          return;
         }
 
         if (manager.hasClient(clientId)) {
