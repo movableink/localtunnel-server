@@ -52,7 +52,7 @@ module.exports = function(opt) {
 
         const isNewClientRequest = ctx.query['new'] !== undefined;
         if (isNewClientRequest) {
-            const req_id = rand_id();
+            const req_id = rand_id(opt.subdomain_length);
             debug('making new client with id %s', req_id);
             const info = await manager.newClient(req_id);
 

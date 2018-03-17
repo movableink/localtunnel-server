@@ -25,6 +25,10 @@ const argv = optimist
         default: 10,
         describe: 'maximum number of tcp sockets each client is allowed to establish at one time (the tunnels)'
     })
+    .options('subdomain-length', {
+        default: 10,
+        describe: 'maximum number of tcp sockets each client is allowed to establish at one time (the tunnels)'
+    })
     .argv;
 
 if (argv.help) {
@@ -35,7 +39,8 @@ if (argv.help) {
 const server = require('../server')({
     max_tcp_sockets: argv['max-sockets'],
     secure: argv.secure,
-    http_subnet: argv['allow-http-subnet']
+    http_subnet: argv['allow-http-subnet'],
+    subdomain_length: parseInt(argv['subdomain-length'], 10)
 });
 
 server.listen(argv.port, () => {
